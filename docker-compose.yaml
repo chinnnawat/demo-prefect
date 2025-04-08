@@ -8,7 +8,7 @@ services:
     volumes:
       - prefect_pgdata:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
+      - "5432:5432"
 
     networks:
       - prefect_network
@@ -37,14 +37,15 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./source:/app
-    depends_on: # Keep depends_on, it ensures container start order
+    depends_on:
       prefect:
         condition: service_started 
     environment:
       - PREFECT_API_URL=http://prefect:4200/api
     networks:
       - prefect_network
-    command: ["python3", "wait-for-prefect.py", "python3", "app.py"]    
+    # command: ["python3", "wait-for-prefect.py", "python3", "app.py"]    
+    command: ["python3", "app.py"]
 
 volumes:
   prefect_pgdata:
