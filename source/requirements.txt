@@ -1,2 +1,3 @@
 flask
 requests
+prefect==2.20.16

@@ -1,15 +1,21 @@
-from flask import Flask
+from prefect import flow, task 
+import time
+@task
+def say_hello():
+    print("Hello, world!")
+    return "Hello, world!"
 
-app = Flask(__name__)
+@task
+def say_goodbye():
+    print("Goodbye, world!")
+    return "Goodbye, world!"
 
-@app.route('/')
-def home():
-    return 'OK'
+@flow(log_prints=True)
+def hello_world_flow():
+    while 1:
+        time.sleep(2)
+        hello = say_hello()
+        goodbye = say_goodbye()
 
-@app.route('/hello')
-def hello_world():
-    return 'Hello, World!'
-
-@app.route('/error')
-def error():
-    raise Exception('This is an error!')
+if __name__ == "__main__":
+    hello_world_flow()
