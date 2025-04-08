@@ -22,7 +22,7 @@ services:
     environment:
       - PREFECT_SERVER_API_HOST=0.0.0.0
       - PREFECT_UI_URL=http://localhost:4200
-      - PREFECT_API_URL=http://localhost:4200/api
+      - PREFECT_API_URL=http://prefect:4200/api
       - PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://prefect:prefect@postgres:5432/prefect
       - PREFECT_API_DATABASE_ECHO=False
       - PREFECT_API_DATABASE_MIGRATE_ON_START=True
@@ -31,38 +31,26 @@ services:
     networks:
       - prefect_network
 
-  # python-app:
-  #   build:
-  #     context: flow
-  #     dockerfile: dockerfile
-  #   volumes:
-  #     - ./flow/source:/app
-  #   depends_on:
-  #     - prefect
-  #   environment:
-  #     - PREFECT_API_URL=http://prefect:4200/api
-  #   networks:
-  #     - prefect_network
-
   backend-prefect:
     build:
       context: source
       dockerfile: Dockerfile
     volumes:
       - ./source:/app
-    depends_on:
-      - prefect
+    depends_on: # Keep depends_on, it ensures container start order
+      prefect:
+        condition: service_started 
     environment:
       - PREFECT_API_URL=http://prefect:4200/api
     networks:
-      - prefect_network    
+      - prefect_network
+    command: ["python3", "wait-for-prefect.py", "python3", "app.py"]    
 
 volumes:
   prefect_pgdata:
-    driver: local
+    # driver: local
   prefect:
-    driver: local
+    # driver: local
 
 networks:
   prefect_network:
-    # driver: bridge
