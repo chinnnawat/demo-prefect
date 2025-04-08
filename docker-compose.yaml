@@ -1,0 +1,40 @@
+services:
+  prefect:
+    image: prefecthq/prefect:2-python3.12
+    restart: always
+    volumes:
+      - prefect:/root/.prefect
+    entrypoint: ["prefect", "server", "start"]
+    environment:
+
+      - PREFECT_SERVER_API_HOST=0.0.0.0
+      - PREFECT_UI_URL=localhost:4200/api
+      - PREFECT_API_URL=localhost:4200/api
+      - PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://prefect:prefect@postgres/prefect
+      - PREFECT_API_DATABASE_ECHO=False
+      - PREFECT_API_DATABASE_MIGRATE_ON_START=True
+    ports:
+      - 4200:4200
+
+  backend:
+    build: source
+    container_name: backend-prefect
+    volumes:
+      - ./source:/app
+    ports:
+      - 8000:8000
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: prefect
+      POSTGRES_PASSWORD: prefect
+      POSTGRES_DB: prefect
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      
+volumes:
+  prefect:
+  postgres:
