@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:15.0
+    image: postgres:15
     environment:
       POSTGRES_USER: prefect
       POSTGRES_PASSWORD: prefect
@@ -38,8 +38,7 @@ services:
     volumes:
       - ./source:/app
     depends_on:
-      prefect:
-        condition: service_started 
+      - prefect 
     environment:
       - PREFECT_API_URL=http://prefect:4200/api
     networks:
