@@ -45,7 +45,7 @@ services:
     networks:
       - prefect_network
     # command: ["python3", "wait-for-prefect.py", "python3", "app.py"]    
-    command: ["python3", "app.py"]
+    command: ["python3", "create_deployment.py"]
 
 volumes:
   prefect_pgdata:
