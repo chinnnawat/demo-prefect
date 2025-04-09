@@ -37,6 +37,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./source:/app
+    user: 1000:1000
     depends_on:
       - prefect 
     environment:
