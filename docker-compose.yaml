@@ -37,6 +37,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./source:/app
+      - ${HOME}/.vscode-server-demo-prefect:/home/node/.vscode-server
     user: 1000:1000
     depends_on:
       - prefect 
@@ -45,14 +46,27 @@ services:
 
     networks:
       - prefect_network
-    # command: ["python3", "wait-for-prefect.py", "python3", "app.py"]    
     command: ["python3", "app.py"]
+
+  task-background-process:
+    build:
+      context: source
+      dockerfile: Dockerfile
+    volumes:
+      - ./source:/app
+    user: 1000:1000
+    depends_on:
+      - prefect 
+    environment:
+      - PREFECT_API_URL=http://prefect:4200/api 
+
+    networks:
+      - prefect_network
+    command: ["python3", "task.py"]
 
 volumes:
   prefect_pgdata:
-    # driver: local
   prefect:
-    # driver: local
 
 networks:
   prefect_network:
