@@ -1,12 +1,6 @@
 from prefect import flow, task 
 import time
 
-@flow()
-def hello_world_flow():
-    for _ in range(10):
-        time.sleep(2)
-        say_goodbye()
-        say_hello()
 
 @task
 def say_hello():
@@ -17,6 +11,13 @@ def say_hello():
 def say_goodbye():
     print("Goodbye, world!")
     return "Goodbye, world!"
+
+@flow()
+def hello_world_flow():
+    for _ in range(10):
+        time.sleep(2)
+        say_goodbye()
+        say_hello()
 
 
 if __name__ == "__main__":

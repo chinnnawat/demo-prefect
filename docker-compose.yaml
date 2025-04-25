@@ -15,14 +15,14 @@ services:
 
   prefect:
     image: prefecthq/prefect:3.3.3-python3.12-conda
-    restart: always
+    # restart: always
     volumes:
       - prefect:/root/.prefect
     command: ["prefect", "server", "start"]
     environment:
       - PREFECT_SERVER_API_HOST=0.0.0.0
-      - PREFECT_UI_URL=http://172.20.12.71:4200
-      - PREFECT_API_URL=http://172.20.12.71:4200/api
+      - PREFECT_UI_URL=http://localhost:4200
+      - PREFECT_API_URL=http://localhost:4200/api
       - PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://prefect:prefect@postgres:5432/prefect
       - PREFECT_API_DATABASE_ECHO=False
       - PREFECT_API_DATABASE_MIGRATE_ON_START=True
@@ -41,11 +41,12 @@ services:
     depends_on:
       - prefect 
     environment:
-      - PREFECT_API_URL=http://172.20.12.71:4200/api
+      - PREFECT_API_URL=http://prefect:4200/api 
+
     networks:
       - prefect_network
     # command: ["python3", "wait-for-prefect.py", "python3", "app.py"]    
-    command: ["python3", "create_deployment.py"]
+    command: ["python3", "app.py"]
 
 volumes:
   prefect_pgdata:
